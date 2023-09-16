@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 @Data
 public class CourierTrackingRequest {
     private Timestamp time;
-    private long courierId;
+    private Long courierId;
     private Double courierLat;
     private Double courierLng;
 }

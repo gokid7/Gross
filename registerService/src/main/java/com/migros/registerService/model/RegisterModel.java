@@ -15,7 +15,7 @@ public class RegisterModel {
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @Column(name = "timestamp")
     private Timestamp timestamp;

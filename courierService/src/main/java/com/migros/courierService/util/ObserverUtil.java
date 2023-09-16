@@ -18,11 +18,7 @@ public class ObserverUtil {
     }
 
     public void notifyStore(CourierDto courier){
-        List<StoreDto> stores = new ArrayList<>();
-        stores.addAll(courier.getStores() != null ? courier.getStores() : new ArrayList<>());
-        stores.forEach(store ->{
-            System.out.println(courier.getId() + " nolu kurye mağazaya giriş yaptı. Kurye statusü : " + courier.getStatus());
-        });
+        System.out.println(courier.getId() + " nolu kurye "+ courier.getStoreName() +" mağazasına giriş yaptı. Kurye statusü : " + courier.getStatus());
     }
 
 }
