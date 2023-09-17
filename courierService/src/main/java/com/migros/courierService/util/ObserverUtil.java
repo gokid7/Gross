@@ -9,16 +9,17 @@ import java.util.List;
 
 @Component
 public class ObserverUtil {
-
-    public void subscribe(StoreDto store, CourierDto courier){
-        List<StoreDto> storeList = new ArrayList<>();
-        storeList.addAll(courier.getStores() != null ? courier.getStores() : new ArrayList<>());
-        storeList.add(store);
-        courier.setStores(storeList);
+    private List<StoreDto> storeList = new ArrayList<>();
+    public void subscribe(List<StoreDto> stores){
+        storeList.addAll(stores);
     }
 
     public void notifyStore(CourierDto courier){
-        System.out.println(courier.getId() + " nolu kurye "+ courier.getStoreName() +" mağazasına giriş yaptı. Kurye statusü : " + courier.getStatus());
+        storeList.forEach(store -> {
+            if (store.getName().equalsIgnoreCase(courier.getStoreName())) {
+                System.out.println(courier.getId() + " nolu kurye "+ store.getName() +" mağazasına giriş yaptı. Kurye statusü : " + courier.getStatus());
+            }
+        });
     }
 
 }

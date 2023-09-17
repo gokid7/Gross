@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping(path="/v1/register")
@@ -21,7 +23,7 @@ public class RegisterController {
 
     @GetMapping(value = "/findByCourierId/{courierId}",produces = MediaType.APPLICATION_JSON_VALUE)
     @ExecutionTime
-    public ResponseEntity<RegisterModel> findByCourierId(@PathVariable Long courierId) {
+    public ResponseEntity<List<RegisterModel>> findByCourierId(@PathVariable Long courierId) {
         return ResponseEntity.ok(registerService.findByCourierId(courierId));
     }
 

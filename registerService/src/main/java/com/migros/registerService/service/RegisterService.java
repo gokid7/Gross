@@ -7,6 +7,7 @@ import com.migros.registerService.repository.RegisterRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 public class RegisterService {
@@ -19,7 +20,7 @@ public class RegisterService {
         this.objectMapper = objectMapper;
     }
 
-    public RegisterModel findByCourierId(Long courierId){
+    public List<RegisterModel> findByCourierId(Long courierId){
         return registerRepository.findByCourierId(courierId);
     }
 

@@ -1,5 +1,7 @@
 package com.migros.courierService.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.migros.courierService.client.RegisterServiceClient;
 import com.migros.courierService.client.StoreServiceClient;
@@ -42,8 +44,10 @@ public class CourierService {
         this.distanceUtil = distanceUtil;
     }
 
-    public CourierDto courierTracking(CourierTrackingRequest request){
+    public void courierTracking(CourierTrackingRequest request) throws JsonProcessingException {
         List<StoreDto> stores = storeServiceClient.getAllStores().getBody();
+        ObserverUtil observerUtil = new ObserverUtil();
+        observerUtil.subscribe(stores);
         stores.forEach(store ->{
             RedisStore redisStore = objectMapper.convertValue(store,RedisStore.class);
             redisStoreService.saveStores(redisStore);
@@ -54,31 +58,34 @@ public class CourierService {
         courierRepository.save(courierModel);
         String courierStatus = CourierStatus.ON_ROAD.toString();
         String currentStore = "";
-
-        ObserverUtil observerUtil = new ObserverUtil();
+        double totalDistanceForCourier = 0;
         Optional<RedisCourier> existingCourier = redisCourierService.findByCourierId(request.getCourierId());
         if(existingCourier.isPresent()){
-            StoreDto existingStore = new StoreDto();
-            if("IN_STORE".equals(existingCourier.get().getCourierStatus())){
-                existingStore.setName(existingCourier.get().getStoreName());
-            }
-            RedisCourier tempCourier = existingCourier.get();
-            observerUtil.subscribe(existingStore,objectMapper.convertValue(tempCourier,CourierDto.class));
+           double distance = distanceUtil.distance(existingCourier.get().getCourierLat(), request.getCourierLat(),existingCourier.get().getCourierLng(), request.getCourierLng());
+            totalDistanceForCourier = existingCourier.get().getTotalDistance() + distance;
         }
 
-        //stores.parallelStream().
+        //stores.parallelStream() ile daha fazla mağaza olursa yapılabilir.
 
         for (int i=0; i< stores.size(); i++){
             Timestamp now = new Timestamp(System.currentTimeMillis());
             Double hundredCheck = distanceUtil.distance(request.getCourierLat(),stores.get(i).getLat(),request.getCourierLng(),stores.get(i).getLng());
             if(hundredCheck<=100){
-                RegisterModelDto registerModel = objectMapper.convertValue(registerServiceClient.findByCourierId(request.getCourierId()).getBody(),RegisterModelDto.class);
-                if(registerModel != null){
-                    if(registerModel.getTimestamp().getTime() - now.getTime() < 60000){
-                        registerServiceClient.registerCourier(prepareRegisterBuilder(now,stores.get(i), registerModel.getCourierId()));
-                        courierStatus = CourierStatus.IN_STORE.toString();
-                        currentStore = stores.get(i).getName();
-                        observerUtil.notifyStore(objectMapper.convertValue(existingCourier,CourierDto.class));
+                TypeReference<List<RegisterModelDto>> typeReference = new TypeReference<List<RegisterModelDto>>() {};
+                String responseStr = objectMapper.writeValueAsString(registerServiceClient.findByCourierId(request.getCourierId()).getBody());
+                List<RegisterModelDto> registerModelList = objectMapper.readValue(responseStr, typeReference);
+                if(!registerModelList.isEmpty()){
+                    for (int j=0; j<registerModelList.size();j++){
+                        if(registerModelList.get(j).getTimestamp().getTime() - now.getTime() < 60000){
+                            registerServiceClient.registerCourier(prepareRegisterBuilder(now,stores.get(i), registerModelList.get(j).getCourierId()));
+                            courierStatus = CourierStatus.IN_STORE.toString();
+                            currentStore = stores.get(i).getName();
+                            CourierDto courierDto = new CourierDto();
+                            courierDto.setId(existingCourier.get().getId());
+                            courierDto.setStatus(existingCourier.get().getCourierStatus());
+                            courierDto.setStoreName(existingCourier.get().getStoreName());
+                            observerUtil.notifyStore(courierDto);
+                        }
                     }
                 }
                 else{
@@ -90,8 +97,7 @@ public class CourierService {
             }
         }
         redisCourierService.saveCourier(prepareRedisCourier(request.getCourierId(), request.getCourierLat(),
-                request.getCourierLng(),currentStore,courierStatus));
-        return null;
+                request.getCourierLng(),currentStore,courierStatus, totalDistanceForCourier));
     }
 
     private RegisterModelDto prepareRegisterBuilder(Timestamp now,StoreDto store,Long courierId){
@@ -105,11 +111,20 @@ public class CourierService {
         return enteredCourier;
     }
 
-    private RedisCourier prepareRedisCourier(long courierId,Double lat, Double lng,String storeName,String status){
+    private RedisCourier prepareRedisCourier(long courierId,Double lat, Double lng,String storeName,String status, double totalDistance){
         RedisCourier redisCourier = RedisCourier.builder()
                         .id(courierId).courierLat(lat).courierLng(lng)
-                        .courierStatus(status).storeName(storeName).build();
+                        .courierStatus(status).storeName(storeName).totalDistance(totalDistance)
+                        .build();
         return redisCourier;
+    }
+
+    public Double getTotalTravelDistance(long courierId){
+        Optional<RedisCourier> existingCourier = redisCourierService.findByCourierId(courierId);
+        if(existingCourier.isPresent()){
+            return existingCourier.get().getTotalDistance();
+        }
+        return Double.valueOf(0);
     }
 
     public List<RedisStore> getRedisStore(){

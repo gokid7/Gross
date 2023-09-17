@@ -1,5 +1,6 @@
 package com.migros.courierService.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.migros.courierService.dto.CourierDto;
 import com.migros.courierService.model.redis.RedisStore;
 import com.migros.courierService.model.request.CourierTrackingRequest;
@@ -7,10 +8,7 @@ import com.migros.courierService.service.CourierService;
 import com.migros.courierService.service.RedisStoreService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,8 +25,14 @@ public class CourierController {
     }
 
     @PostMapping(value = "/courierTracking",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CourierDto> courierTracking(@RequestBody CourierTrackingRequest request){
-        return ResponseEntity.ok(courierService.courierTracking(request));
+    public ResponseEntity<Void> courierTracking(@RequestBody CourierTrackingRequest request) throws JsonProcessingException {
+        courierService.courierTracking(request);
+        return ResponseEntity.status(201).build();
+    }
+
+    @PostMapping(value = "/getTotalTravelDistance/{courierId}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Double> getTotalTravelDistance(@PathVariable long courierId) {
+        return ResponseEntity.ok(courierService.getTotalTravelDistance(courierId));
     }
 
     @PostMapping(value = "/getRedisStores",produces = MediaType.APPLICATION_JSON_VALUE)

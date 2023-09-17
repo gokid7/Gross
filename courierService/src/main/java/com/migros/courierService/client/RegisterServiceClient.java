@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 @FeignClient(name = "registerService", path="/v1/register")
 public interface RegisterServiceClient {
 
     @GetMapping(value = "/findByCourierId/{courierId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<RegisterModelDto> findByCourierId(@PathVariable Long courierId);
+    ResponseEntity<List<RegisterModelDto>> findByCourierId(@PathVariable Long courierId);
 
     @PostMapping(value = "/registerCourier",produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Void>registerCourier(@RequestBody RegisterModelDto modelDto);
