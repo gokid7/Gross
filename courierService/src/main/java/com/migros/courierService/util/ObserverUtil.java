@@ -2,6 +2,7 @@ package com.migros.courierService.util;
 
 import com.migros.courierService.dto.CourierDto;
 import com.migros.courierService.dto.StoreDto;
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
