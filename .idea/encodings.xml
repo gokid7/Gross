@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/courierService/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/eurekaServer/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/registerService/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/storeService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/courierservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/eurekaserver/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/registerservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/storeservice/src/main/java" charset="UTF-8" />
   </component>
 </project>

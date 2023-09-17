@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+
+ eurekaserver:
+    image: grosseureka
+    build:
+      context: ./eurekaserver
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+
+ storeservice:
+    image: grossstore
+    build:
+      context: ./storeservice
+      dockerfile: Dockerfile
+    ports:
+      - "9001:9001"
+    environment:
+      - eureka.client.service-url.defaultZone=http://eurekaserver:8761/eureka
+    depends_on:
+      - eurekaserver
+
+ registerservice:
+   image: grossregister
+   build:
+     context: ./registerservice
+     dockerfile: Dockerfile
+   ports:
+     - "9002:9002"
+   environment:
+     - eureka.client.service-url.defaultZone=http://eurekaserver:8761/eureka
+   depends_on:
+     - eurekaserver
+     - storeservice
+
+ courierservice:
+   image: grosscourier
+   build:
+     context: ./courierservice
+     dockerfile: Dockerfile
+   ports:
+     - "9003:9003"
+   environment:
+     - eureka.client.service-url.defaultZone=http://eurekaserver:8761/eureka
+   depends_on:
+     - eurekaserver
+     - storeservice
+     - registerservice

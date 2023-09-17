@@ -3,10 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Migross.iml" filepath="$PROJECT_DIR$/.idea/Migross.iml" />
-      <module fileurl="file://$PROJECT_DIR$/courierService/courierService.iml" filepath="$PROJECT_DIR$/courierService/courierService.iml" />
-      <module fileurl="file://$PROJECT_DIR$/eurekaServer/eurekaServer.iml" filepath="$PROJECT_DIR$/eurekaServer/eurekaServer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/registerService/registerService.iml" filepath="$PROJECT_DIR$/registerService/registerService.iml" />
-      <module fileurl="file://$PROJECT_DIR$/storeService/storeService.iml" filepath="$PROJECT_DIR$/storeService/storeService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/courierService/courierservice.iml" filepath="$PROJECT_DIR$/courierService/courierservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eurekaServer/eurekaserver.iml" filepath="$PROJECT_DIR$/eurekaServer/eurekaserver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/registerService/registerservice.iml" filepath="$PROJECT_DIR$/registerService/registerservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/storeService/storeservice.iml" filepath="$PROJECT_DIR$/storeService/storeservice.iml" />
     </modules>
   </component>
 </project>
