@@ -1,4 +1,4 @@
-package com.migros.courierService.aspect;
+package com.migros.courierService.aspect.execution;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

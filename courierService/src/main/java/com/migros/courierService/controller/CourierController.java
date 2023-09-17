@@ -2,8 +2,11 @@ package com.migros.courierService.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.migros.courierService.dto.CourierDto;
+import com.migros.courierService.exception.BadRequestException;
+import com.migros.courierService.exception.ResourceNotFoundException;
 import com.migros.courierService.model.redis.RedisStore;
 import com.migros.courierService.model.request.CourierTrackingRequest;
+import com.migros.courierService.model.response.CourierBaseResponse;
 import com.migros.courierService.service.CourierService;
 import com.migros.courierService.service.RedisStoreService;
 import org.springframework.http.MediaType;
@@ -25,19 +28,21 @@ public class CourierController {
     }
 
     @PostMapping(value = "/courierTracking",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> courierTracking(@RequestBody CourierTrackingRequest request) throws JsonProcessingException {
+    public ResponseEntity<CourierBaseResponse> courierTracking(@RequestBody CourierTrackingRequest request) throws JsonProcessingException {
         courierService.courierTracking(request);
-        return ResponseEntity.status(201).build();
+        return ResponseEntity.ok(new CourierBaseResponse<>(null,true,null));
     }
 
     @PostMapping(value = "/getTotalTravelDistance/{courierId}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Double> getTotalTravelDistance(@PathVariable long courierId) {
-        return ResponseEntity.ok(courierService.getTotalTravelDistance(courierId));
+    public ResponseEntity<CourierBaseResponse<Double>> getTotalTravelDistance(@PathVariable long courierId) {
+        Double result = courierService.getTotalTravelDistance(courierId);
+        return ResponseEntity.ok(new CourierBaseResponse<>(result,true,null));
     }
 
     @PostMapping(value = "/getRedisStores",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<RedisStore>> getRedisStores(){
-        return ResponseEntity.ok(courierService.getRedisStore());
+    public ResponseEntity<CourierBaseResponse<List<RedisStore>>> getRedisStores(){
+        List<RedisStore> result = courierService.getRedisStore();
+        return ResponseEntity.ok(new CourierBaseResponse<>(result,true,null));
     }
 
 

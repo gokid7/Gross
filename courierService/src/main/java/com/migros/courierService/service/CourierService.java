@@ -9,6 +9,8 @@ import com.migros.courierService.dto.CourierDto;
 import com.migros.courierService.dto.RegisterModelDto;
 import com.migros.courierService.dto.StoreDto;
 import com.migros.courierService.enums.CourierStatus;
+import com.migros.courierService.exception.BadRequestException;
+import com.migros.courierService.exception.ResourceNotFoundException;
 import com.migros.courierService.model.CourierModel;
 import com.migros.courierService.model.redis.RedisCourier;
 import com.migros.courierService.model.redis.RedisStore;
